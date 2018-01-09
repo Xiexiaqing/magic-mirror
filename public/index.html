@@ -1,0 +1,153 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>Daily</title>
+        <style>
+            ul, ol, h1, h2, h3, h4, h5{
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                background-color: #000;
+                width: 100%;
+                height: 200px;
+                color: #fff;
+            }
+            
+            #app {
+                margin-top: 50px;
+                display: flex;
+                display: -webkit-flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+            }
+
+            #app .item {
+                order: 0;
+                flex-grow: 0;
+                flex-shrink: 0;
+                flex-basis: 25%;
+                align-self: center;
+                text-align: center;
+                height: 100%;
+                font-weight: 400;
+            }
+
+            .MT20 {
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div class="item" style="flex-basis: 10%;">
+            </div>
+            <div id="calendar-zone" class="item" style="text-align: left;">
+            </div>
+            <div class="item">
+                <img src="https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/aladdin/img/new_weath/icon/1.png" id="weather-type-img" style="width: 100px;"/>
+            </div>
+            <div id="weather-zone" class="item" style="text-align: right;">
+            </div>
+            <div class="item" style="flex-basis: 10%;">
+            </div>
+        </div>
+    </body>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $.ajax({
+            url: '/api/get/weather',
+            type: 'GET',
+            async: true,
+            data: {
+                city: '北京'
+            },
+            timeout: 5000, 
+            dataType:'json',
+            success:function(res,textStatus,jqXHR){
+                var weather_data = res.data;
+                var type = weather_data.forecast[0].type;
+
+                var tmpl = '<h1 style="font-size: 70px">' + weather_data.wendu + ' ℃</h1>';
+                tmpl += '<h3 class="MT20">PM2.5 ' + weather_data.pm25 + '<h3>';
+                tmpl += '<h3 class="MT20">湿度 ' + weather_data.shidu + '<h3>';
+                tmpl += '<h3 class="MT20">' + weather_data.quality + '<h3>';
+
+                $('#weather-zone').html(tmpl);
+
+                var img_url = '';
+
+                if (type === '晴') {
+                    img_url = 'https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/aladdin/img/new_weath/icon/1.png';
+                } else if (type === '多云转晴') {
+                    img_url = 'https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/aladdin/img/new_weath/bigicon/5.png';
+                } else if (type === '阴' || type === '多云') {
+                    img_url = 'https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/aladdin/img/new_weath/icon/3.png';
+                } else if (type === '晴转阴') {
+                    img_url = 'https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/aladdin/img/new_weath/icon/5.png';
+                } else if (type === '小雪' || type === '中雪' || type === '大雪' || type === '暴雪') {
+                    img_url = 'https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/aladdin/img/new_weath/icon/17.png';
+                } else if (type === '雨夹雪') {
+                    img_url = 'https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/aladdin/img/new_weath/icon/40.png';
+                } else if (type === '小雨' || type === '暴雨' || type === '中雨' || type === '大雨') {
+                    img_url = 'https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/aladdin/img/new_weath/icon/13.png';
+                } else if (type.indexOf('雷') > -1) {
+                    img_url = 'https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/aladdin/img/new_weath/icon/15.png';
+                }
+
+                $('#weather-type-img').attr('src', img_url);
+            },
+            error:function(xhr,textStatus){
+                console.log('错误')
+            },
+            complete:function(){
+                console.log('结束')
+            }
+        });
+
+        $.ajax({
+            url: '/api/get/calendar',
+            type: 'GET',
+            async: true,
+            data: {},
+            timeout: 5000, 
+            dataType:'json',
+            success:function(res,textStatus,jqXHR){
+                var date_data = res.data;
+
+                var tmpl = '<h1 style="font-size: 70px;">' + date_data.year + '-' + date_data.month + '-' + date_data.day  + '</h1>';
+                tmpl += '<h3 class="MT20">' + date_data.cnmonth + '月' + date_data.cnday  + '<h3>';
+                tmpl += '<h3 class="MT20" id="now_time">' + getNowTime() + '<h3>';
+                tmpl += '<h3 class="MT20"> 宜 ' + date_data.suit + '<h3>';
+                tmpl += '<h3 class="MT20"> 忌 ' + date_data.taboo + '<h3>';
+
+                $('#calendar-zone').html(tmpl);
+
+                setInterval(function(){
+                    $('#now_time').html(getNowTime());
+                }, 1000);
+            },
+            error:function(xhr,textStatus){
+                console.log('错误')
+            },
+            complete:function(){
+                console.log('结束')
+            }
+        });
+
+        function getNowTime() {
+            var now_date = new Date();
+
+            var hour = now_date.getHours();
+            var minute = now_date.getMinutes();
+            var second = now_date.getSeconds();
+
+            hour = hour < 10 ? '0' + hour : hour;
+            minute = minute < 10 ? '0' + minute : minute;
+            second = second < 10 ? '0' + second : second;
+
+            return hour + ':' + minute + ':' + second;
+        }
+    </script>
+</html>

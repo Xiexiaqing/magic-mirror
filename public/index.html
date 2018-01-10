@@ -10,8 +10,10 @@
             body {
                 background-color: #000;
                 width: 100%;
-                height: 200px;
+                height: 100%;
                 color: #fff;
+                margin: 0;
+                overflow: hidden;
             }
             
             #app {
@@ -27,10 +29,14 @@
                 order: 0;
                 flex-grow: 0;
                 flex-shrink: 0;
-                flex-basis: 25%;
+                flex-basis: 30%;
                 align-self: center;
                 text-align: center;
                 height: 100%;
+                font-weight: 400;
+            }
+
+            #app h3 {
                 font-weight: 400;
             }
 
@@ -41,7 +47,7 @@
     </head>
     <body>
         <div id="app">
-            <div class="item" style="flex-basis: 10%;">
+            <div class="item" style="flex-basis: 5%;">
             </div>
             <div id="calendar-zone" class="item" style="text-align: left;">
             </div>
@@ -50,7 +56,7 @@
             </div>
             <div id="weather-zone" class="item" style="text-align: right;">
             </div>
-            <div class="item" style="flex-basis: 10%;">
+            <div class="item" style="flex-basis: 5%;">
             </div>
         </div>
     </body>
@@ -70,9 +76,9 @@
                 var type = weather_data.forecast[0].type;
 
                 var tmpl = '<h1 style="font-size: 70px">' + weather_data.wendu + ' ℃</h1>';
-                tmpl += '<h3 class="MT20">PM2.5 ' + weather_data.pm25 + '<h3>';
-                tmpl += '<h3 class="MT20">湿度 ' + weather_data.shidu + '<h3>';
-                tmpl += '<h3 class="MT20">' + weather_data.quality + '<h3>';
+                tmpl += '<h3 class="MT20">PM2.5 ' + weather_data.pm25 + '</h3>';
+                tmpl += '<h3 class="MT20">湿度 ' + weather_data.shidu + '</h3>';
+                tmpl += '<h3 class="MT20">' + weather_data.quality + '</h3>';
 
                 $('#weather-zone').html(tmpl);
 
@@ -117,10 +123,10 @@
                 var date_data = res.data;
 
                 var tmpl = '<h1 style="font-size: 70px;">' + date_data.year + '-' + date_data.month + '-' + date_data.day  + '</h1>';
-                tmpl += '<h3 class="MT20">' + date_data.cnmonth + '月' + date_data.cnday  + '<h3>';
-                tmpl += '<h3 class="MT20" id="now_time">' + getNowTime() + '<h3>';
-                tmpl += '<h3 class="MT20"> 宜 ' + date_data.suit + '<h3>';
-                tmpl += '<h3 class="MT20"> 忌 ' + date_data.taboo + '<h3>';
+                tmpl += '<h3 class="MT20">' + date_data.cnmonth + '月' + date_data.cnday  + '</h3>';
+                tmpl += '<h3 class="MT20" id="now_time">' + getNowTime() + '</h3>';
+                tmpl += '<h3 class="MT20"> 宜 ' + date_data.suit + '</h3>';
+                tmpl += '<h3 class="MT20"> 忌 ' + date_data.taboo + '</h3>';
 
                 $('#calendar-zone').html(tmpl);
 
